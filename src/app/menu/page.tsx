@@ -10,6 +10,7 @@ import { Role } from "../../../constants";
 import toast from "react-hot-toast";
 import DetailsModal from "@/components/DetailsModal";
 import { CATEGORY_OPTIONS } from "@/utils/constants";
+import { useDebounce } from "@/hooks/debouncs";
 
 export default function MenuPage() {
   const [menu, setMenu] = useState<MenuItem[]>([]);
@@ -48,9 +49,11 @@ export default function MenuPage() {
     setTotal(res.data.total);
   };
 
+  const debouncedSearch = useDebounce(search, 1000);
+
   useEffect(() => {
     fetchMenu();
-  }, [page, search, category, sort, minPrice, maxPrice]);
+  }, [page, debouncedSearch, category, sort, minPrice, maxPrice]);
 
   const handleDelete = async (id: number) => {
     try {

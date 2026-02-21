@@ -1,25 +1,21 @@
 "use client";
 
 import { useCart } from "@/context/CartContext";
-import api from "@/lib/api";
-import { useRouter } from "next/navigation";
+import PaymentButton from "@/components/PaymentButton";
+import { useState } from "react";
+import { useDebounce } from "@/hooks/debouncs";
+import toast from "react-hot-toast";
 
 export default function CartPage() {
   const { cart, clearCart, addToCart, reduceQuantity } = useCart();
-  const router = useRouter();
+  const [notes, setNotes] = useState("");
+  const [show, setShow] = useState(false);
+  const debouncedNotes = useDebounce(notes, 500);
 
   const total = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-
-  const placeOrder = async () => {
-    if (cart.length === 0) return;
-
-    const res = await api.post("/orders", { items: cart });
-    clearCart();
-    router.push(`/orders/${res.data.orderId}`);
-  };
 
   return (
     <div className="container mt-5">
@@ -97,15 +93,25 @@ export default function CartPage() {
               </div>
 
               <hr />
+              <div className="mb-3">
+                <label htmlFor="specialInstructions" className="form-label">
+                  Special Instructions
+                </label>
+                <textarea
+                  id="specialInstructions"
+                  className="form-control"
+                  placeholder="Add any special instructions for your order..."
+                  rows={3}
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                ></textarea>
+              </div>
+              <hr />
 
               <div className="d-flex justify-content-between align-items-center">
                 <h4>Total: ₹ {total}</h4>
-                <button
-                  className="btn btn-success"
-                  onClick={placeOrder}
-                >
-                  Place Order
-                </button>
+                {!show ? <button className="btn btn-primary" onClick={() => setShow(true)}>Proceed to Pay</button> :
+                  <PaymentButton amount={total} notes={debouncedNotes} />}
               </div>
             </>
           )}
