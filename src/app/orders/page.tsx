@@ -7,6 +7,7 @@ import { Order } from "@/types";
 import { useUser } from "@/context/UserContext";
 import { Role } from "../../../constants";
 import { ORDER_STATUS } from "@/utils/constants";
+import DetailsModal from "@/components/DetailsModal";
 
 export default function OrdersPage() {
     const [orders, setOrders] = useState<Order[]>([]);
@@ -14,6 +15,9 @@ export default function OrdersPage() {
     const [page, setPage] = useState(1);
     const [status, setStatus] = useState("");
     const [sort, setSort] = useState("created_at");
+    const [showDetails, setShowDetails] = useState(false);
+    const [selectedId, setSelectedId] = useState<number | null>(null);
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
     const limit = 5;
 
@@ -38,6 +42,26 @@ export default function OrdersPage() {
         fetchOrders();
     }, [page, status, sort]);
 
+    const fetchOrderDetails = async (id: number) => {
+        const res = await api.get(`/orders/${id}`);
+        setSelectedOrder(res.data);
+        setShowDetails(true);
+    }
+
+    useEffect(() => {
+        if (selectedId !== null) {
+            fetchOrderDetails(selectedId);
+        } else {
+            setShowDetails(false);
+            setSelectedOrder(null);
+        }
+    }, [selectedId]);
+
+    const updateOrderStatus = async (id: number, status: string) => {
+        await api.put(`/orders/${id}/status`, { order_status: status });
+        fetchOrders();
+    }
+
     return (
         <div className="container mt-4">
             <h2>Orders</h2>
@@ -57,8 +81,8 @@ export default function OrdersPage() {
                         : "Filter by status"}
                 </button>
 
-                <ul className="dropdown-menu w-50 p-2">
-                    {ORDER_STATUS.map((stat) => (
+                <ul className="dropdown-menu p-2">
+                    {["", ...ORDER_STATUS].map((stat) => (
                         <li key={stat} className="dropdown-item">
                             <div className="form-check">
                                 <input
@@ -69,7 +93,7 @@ export default function OrdersPage() {
                                     id={stat}
                                 />
                                 <label className="form-check-label" htmlFor={stat}>
-                                    {stat}
+                                    {stat === "" ? "All" : stat}
                                 </label>
                             </div>
                         </li>
@@ -80,9 +104,11 @@ export default function OrdersPage() {
             <DataTable
                 columns={[
                     { key: "id", label: "ID", sortable: true },
-                    { key: "status", label: "Status", sortable: true },
+                    { key: "status", label: "Order Status", sortable: true },
                     { key: "total_amount", label: "Total", sortable: true },
-                    { key: "created_at", label: "Created", sortable: true },
+                    { key: "payment_status", label: "Payment Status", sortable: true },
+                    { key: "notes", label: "Notes", sortable: true },
+                    { key: "created_at", label: "Ordered At", sortable: true },
                 ]}
                 data={orders}
                 total={total}
@@ -91,10 +117,18 @@ export default function OrdersPage() {
                 onPageChange={setPage}
                 onSort={setSort}
                 isAdmin={user?.role === Role.ADMIN}
-                type={"menu"}
-                onDelete={() => { }}
-                onEdit={() => { }}
-                onUpdate={() => { }}
+                type={"order"}
+                onView={(id: number) => setSelectedId(id)}
+                onUpdate={async (id: number, status: string) => updateOrderStatus(id, status)}
+            />
+            <DetailsModal
+                isOpen={showDetails}
+                onClose={() => {
+                    setSelectedId(null);
+                    setShowDetails(false);
+                }}
+                type="order"
+                data={selectedOrder as any}
             />
         </div>
     );

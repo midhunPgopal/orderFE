@@ -179,7 +179,6 @@ export default function MenuPage() {
           setSelectedItem(menu.find((item) => item.id === id) || null);
           setShowModal(true);
         }}
-        onUpdate={() => { }}
       />
       <CreateMenuItemModal
         show={showModal}

@@ -27,6 +27,8 @@ export interface Order {
     user_id: number;
     total_amount: number;
     status: string;
+    payment_status: string;
+    notes?: string;
     created_at: string;
     updated_at: string;
 }

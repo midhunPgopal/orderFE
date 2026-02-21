@@ -2,24 +2,26 @@
 
 import { isValidUrl } from "@/utils/validate";
 import Image from "next/image";
+import { Role } from "../../constants";
 
 interface MenuDetails {
-  id: number;
-  name: string;
-  description?: string;
-  image_url: string;
-  price: number;
-  stock: number;
-  preparation_time: number;
-  availability: boolean;
-  category: string;
+    id: number;
+    name: string;
+    description?: string;
+    image_url: string;
+    price: number;
+    stock: number;
+    preparation_time: number;
+    availability: boolean;
+    category: string;
 }
 
 
 interface OrderItem {
-    name: string;
+    menu_item_id: number;
+    menu_item_name: string;
     quantity: number;
-    price_per_unit: number;
+    price_at_time: number;
 }
 
 interface OrderDetails {
@@ -47,7 +49,6 @@ export default function DetailsModal({
     data,
 }: Props) {
     if (!isOpen || !data) return null;
-
     return (
         <div className="modal d-block" tabIndex={-1}>
             <div className="modal-dialog modal-lg">
@@ -110,10 +111,10 @@ export default function DetailsModal({
                                     <tbody>
                                         {(data as OrderDetails).items.map((item, index) => (
                                             <tr key={index}>
-                                                <td>{item.name}</td>
+                                                <td>{item.menu_item_name}</td>
                                                 <td>{item.quantity}</td>
-                                                <td>₹{item.price_per_unit}</td>
-                                                <td>₹{item.quantity * item.price_per_unit}</td>
+                                                <td>₹{item.price_at_time}</td>
+                                                <td>₹{item.quantity * item.price_at_time}</td>
                                             </tr>
                                         ))}
                                     </tbody>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCart } from "@/context/CartContext";
-import { CartItem } from "@/types";
+import { ORDER_STATUS } from "@/utils/constants";
 
 interface Column<T> {
     key: keyof T;
@@ -22,7 +22,8 @@ interface Props<T> {
     type: "menu" | "order";
     onDelete?: (id: number) => void;
     onEdit?: (id: number) => void;
-    onUpdate?: (id: number) => void;
+    onView?: (id: number) => void;
+    onUpdate?: (id: number, status: string) => void;
 }
 
 export default function DataTable<T extends { id: number }>({
@@ -37,7 +38,8 @@ export default function DataTable<T extends { id: number }>({
     type,
     onDelete,
     onEdit,
-    onUpdate,
+    onView,
+    onUpdate
 }: Props<T>) {
     const totalPages = Math.ceil(total / limit);
     const { cart, addToCart, reduceQuantity } = useCart();
@@ -103,7 +105,7 @@ export default function DataTable<T extends { id: number }>({
                                         <>
                                             <button
                                                 className="btn btn-sm btn-warning me-2"
-                                                onClick={() => onUpdate?.(row.id)}
+                                                onClick={() => onView?.(row.id)}
                                             >
                                                 View Order
                                             </button>
@@ -132,12 +134,34 @@ export default function DataTable<T extends { id: number }>({
                                         <>
                                             <button
                                                 className="btn btn-sm btn-warning me-2"
-                                                onClick={() => onUpdate?.(row.id)}
+                                                onClick={() => onView?.(row.id)}
                                             >
-                                                Update Order
+                                                View Order
                                             </button>
+                                            <div className="dropdown">
+                                                <button
+                                                    className="btn btn-primary dropdown-toggle"
+                                                    type="button"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false"
+                                                >
+                                                    {(row as any).status}
+                                                </button>
+                                                <ul className="dropdown-menu">
+                                                    {ORDER_STATUS.map((s) => (
+                                                        <li key={s}>
+                                                            <button
+                                                                className="dropdown-item"
+                                                                onClick={() => onUpdate?.(row.id, s)}
+                                                                disabled={s === (row as any).status} // optional: disable current status
+                                                            >
+                                                                {s}
+                                                            </button>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
                                         </>
-
                                     )}
                                 </td>
                             }
