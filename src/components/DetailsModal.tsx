@@ -25,6 +25,7 @@ interface OrderItem {
 }
 
 interface OrderDetails {
+    id: number;
     user_id: number;
     total_amount: number;
     status: string;
@@ -88,6 +89,7 @@ export default function DetailsModal({
 
                         {type === "order" && (
                             <>
+                                <p><strong>Order ID:</strong> {(data as OrderDetails).id}</p>
                                 <p><strong>User ID:</strong> {(data as OrderDetails).user_id}</p>
                                 <p><strong>Total Amount:</strong> ₹{(data as OrderDetails).total_amount}</p>
                                 <p><strong>Status:</strong> {(data as OrderDetails).status}</p>

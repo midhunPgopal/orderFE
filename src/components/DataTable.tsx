@@ -49,27 +49,43 @@ export default function DataTable<T extends { id: number }>({
             <table className="table table-bordered table-hover">
                 <thead>
                     <tr>
-                        {columns.map((col) => (
-                            <th
-                                key={String(col.key)}
-                                style={{ cursor: col.sortable ? "pointer" : "default" }}
-                                onClick={() => col.sortable && onSort(String(col.key))}
-                            >
-                                {col.label} {col.sortable && "↕"}
-                            </th>
-                        ))}
+                        <th>Sl No</th>
+                        {columns
+                            .filter((col) => {
+                                if (col.key === "id" && !isAdmin) {
+                                    return false;
+                                }
+                                return true;
+                            })
+                            .map((col) => (
+                                <th
+                                    key={String(col.key)}
+                                    style={{ cursor: col.sortable ? "pointer" : "default" }}
+                                    onClick={() => col.sortable && onSort(String(col.key))}
+                                >
+                                    {col.label} {col.sortable && "↕"}
+                                </th>
+                            ))}
                         <th>Actions</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    {data.map((row) => (
+                    {data.map((row, index) => (
                         <tr key={row.id}>
-                            {columns.map((col) => (
-                                <td key={String(col.key)}>
-                                    {col.render ? col.render(row) : String(row[col.key])}
-                                </td>
-                            ))}
+                            <td>{(page - 1) * limit + index + 1}</td>
+                            {columns
+                                .filter((col) => {
+                                    if (col.key === "id" && !isAdmin) {
+                                        return false;
+                                    }
+                                    return true;
+                                })
+                                .map((col) => (
+                                    <td key={String(col.key)}>
+                                        {col.render ? col.render(row) : String(row[col.key])}
+                                    </td>
+                                ))}
 
                             {/* Menu action Buttons */}
                             {!isAdmin ?
