@@ -52,6 +52,7 @@ export default function MenuPage() {
   const debouncedSearch = useDebounce(search, 1000);
 
   useEffect(() => {
+    if (maxPrice < 1) setMaxPrice(Number.MAX_SAFE_INTEGER);
     fetchMenu();
   }, [page, debouncedSearch, category, sort, minPrice, maxPrice]);
 

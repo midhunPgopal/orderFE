@@ -24,6 +24,7 @@ export interface CartItem extends MenuItem {
 
 export interface Order {
     id: number;
+    odr_id: string;
     user_id: number;
     total_amount: number;
     status: string;

@@ -8,6 +8,7 @@ import { useUser } from "@/context/UserContext";
 import { Role } from "../../../constants";
 import { ORDER_STATUS } from "@/utils/constants";
 import DetailsModal from "@/components/DetailsModal";
+import { socket } from "@/lib/socket";
 
 export default function OrdersPage() {
     const [orders, setOrders] = useState<Order[]>([]);
@@ -61,6 +62,47 @@ export default function OrdersPage() {
         await api.put(`/orders/${id}/status`, { order_status: status });
         fetchOrders();
     }
+
+    useEffect(() => {
+        socket.connect();
+
+        // Join kitchen room to receive all order updates
+        socket.emit("join-kitchen");
+
+        // 🔥 Listen for new orders
+        socket.on("new-order", () => {
+            fetchOrders();
+        });
+
+        // 🔥 Listen for order payments
+        socket.on("order-paid", (updatedOrder) => {
+            console.log("Order paid update received:", updatedOrder);
+            setOrders((prev) =>
+                prev.map((order) =>
+                    order.odr_id === updatedOrder.orderId
+                        ? { ...order, payment_status: updatedOrder.paymentStatus, status: updatedOrder.orderStatus }
+                        : order
+                )
+            );
+        });
+
+        // 🔥 Listen for order status updates
+        socket.on("order-updated", (updatedOrder) => {
+            setOrders((prev) =>
+                prev.map((order) =>
+                    String(order.id) === String(updatedOrder.orderId)
+                        ? { ...order, status: updatedOrder.status }
+                        : order
+                )
+            );
+        });
+
+        return () => {
+            socket.off("new-order");
+            socket.off("order-updated");
+            socket.disconnect();
+        };
+    }, []);
 
     return (
         <div className="container mt-4">
