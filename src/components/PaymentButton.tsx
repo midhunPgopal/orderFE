@@ -65,7 +65,7 @@ export default function RazorpayButton({amount, notes}: {amount: number, notes?:
     };
 
     return (
-        <button className="btn btn-primary" onClick={handlePayment}>
+        <button className="btn btn-primary" disabled={loading} onClick={handlePayment}>
             {loading ? "Processing..." : `Place Order`}
         </button>
     );

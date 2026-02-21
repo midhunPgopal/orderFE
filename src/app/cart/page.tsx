@@ -2,7 +2,7 @@
 
 import { useCart } from "@/context/CartContext";
 import PaymentButton from "@/components/PaymentButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDebounce } from "@/hooks/debouncs";
 import toast from "react-hot-toast";
 import api from "@/lib/api";
@@ -26,6 +26,16 @@ export default function CartPage() {
       toast.error("Please review your cart. Some item(s) price(s) are changed or out of stock.");
     }
   }
+
+  useEffect(() => {
+    if (show) {
+      const timer = setTimeout(() => {
+        setShow(false);
+      }, 5 * 60 * 1000); // 5 minutes
+
+      return () => clearTimeout(timer);
+    }
+  }, [show]);
 
   return (
     <div className="container mt-5">
