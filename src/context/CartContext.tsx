@@ -26,7 +26,7 @@ export const CartProvider = ({ children }: any) => {
     }
     setCart((prev) => {
       const existing = prev.find((i) => i.id === item.id);
-      if (item.quantity >= item.stock) {
+      if (item.quantity > item.stock) {
         toast.error("Cannot add more than available stock");
         return prev;
       }

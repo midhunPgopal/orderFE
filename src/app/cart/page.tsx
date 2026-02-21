@@ -5,6 +5,7 @@ import PaymentButton from "@/components/PaymentButton";
 import { useState } from "react";
 import { useDebounce } from "@/hooks/debouncs";
 import toast from "react-hot-toast";
+import api from "@/lib/api";
 
 export default function CartPage() {
   const { cart, clearCart, addToCart, reduceQuantity } = useCart();
@@ -16,6 +17,15 @@ export default function CartPage() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+
+  const validateCart = async () => {
+    const res = await api.post("/orders/validateCart", { cart });
+    if (res.data.valid) {
+      setShow(true);
+    } else {
+      toast.error("Please review your cart. Some item(s) price(s) are changed or out of stock.");
+    }
+  }
 
   return (
     <div className="container mt-5">
@@ -110,7 +120,7 @@ export default function CartPage() {
 
               <div className="d-flex justify-content-between align-items-center">
                 <h4>Total: ₹ {total}</h4>
-                {!show ? <button className="btn btn-primary" onClick={() => setShow(true)}>Proceed to Pay</button> :
+                {!show ? <button className="btn btn-primary" onClick={validateCart}>Proceed to Pay</button> :
                   <PaymentButton amount={total} notes={debouncedNotes} />}
               </div>
             </>
