@@ -109,10 +109,11 @@ const Signup: React.FC = () => {
               <form onSubmit={handleSubmit} noValidate>
                 <div className="row">
                   <div className="col-md-6 mb-3">
-                    <label className="form-label">First Name</label>
+                    <label htmlFor="firstName" className="form-label">First Name</label>
                     <input
                       type="text"
                       name="firstName"
+                      id="firstName"
                       className={`form-control ${
                         errors.firstName ? "is-invalid" : ""
                       }`}
@@ -125,10 +126,11 @@ const Signup: React.FC = () => {
                   </div>
 
                   <div className="col-md-6 mb-3">
-                    <label className="form-label">Last Name</label>
+                    <label htmlFor="lastName" className="form-label">Last Name</label>
                     <input
                       type="text"
                       name="lastName"
+                      id="lastName"
                       className={`form-control ${
                         errors.lastName ? "is-invalid" : ""
                       }`}
@@ -142,10 +144,11 @@ const Signup: React.FC = () => {
                 </div>
 
                 <div className="mb-3">
-                  <label className="form-label">Email</label>
+                  <label htmlFor="email" className="form-label">Email</label>
                   <input
                     type="email"
                     name="email"
+                    id="email"
                     className={`form-control ${
                       errors.email ? "is-invalid" : ""
                     }`}
@@ -156,12 +159,13 @@ const Signup: React.FC = () => {
                 </div>
 
                 <div className="mb-3">
-                  <label className="form-label">
+                  <label htmlFor="phone" className="form-label">
                     Phone (without country code)
                   </label>
                   <input
                     type="text"
                     name="phone"
+                    id="phone"
                     className={`form-control ${
                       errors.phone ? "is-invalid" : ""
                     }`}
@@ -172,9 +176,10 @@ const Signup: React.FC = () => {
                 </div>
 
                 <div className="mb-3">
-                  <label className="form-label">Role</label>
+                  <label htmlFor="role" className="form-label">Role</label>
                   <select
                     name="role"
+                    id="role"
                     className={`form-select ${
                       errors.role ? "is-invalid" : ""
                     }`}
@@ -188,10 +193,11 @@ const Signup: React.FC = () => {
                 </div>
 
                 <div className="mb-3">
-                  <label className="form-label">Password</label>
+                  <label htmlFor="password" className="form-label">Password</label>
                   <input
                     type="password"
                     name="password"
+                    id="password"
                     className={`form-control ${
                       errors.password ? "is-invalid" : ""
                     }`}
@@ -202,10 +208,11 @@ const Signup: React.FC = () => {
                 </div>
 
                 <div className="mb-3">
-                  <label className="form-label">Confirm Password</label>
+                  <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
                   <input
                     type="password"
                     name="confirmPassword"
+                    id="confirmPassword"
                     className={`form-control ${
                       errors.confirmPassword ? "is-invalid" : ""
                     }`}

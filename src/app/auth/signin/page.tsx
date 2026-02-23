@@ -58,20 +58,24 @@ const Login: React.FC = () => {
 
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <label className="form-label">Email</label>
+                  <label htmlFor="email" className="form-label">Email</label>
                   <input
                     type="email"
                     className="form-control"
+                    name="email"
+                    id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
 
                 <div className="mb-3">
-                  <label className="form-label">Password</label>
+                  <label htmlFor="password" className="form-label">Password</label>
                   <input
                     type="password"
                     className="form-control"
+                    name="password"
+                    id="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
